@@ -28,28 +28,28 @@ var dreamcast2;
   };
 
   var Game = function(sel, options, callback) {
-    $.extend(
+    // Set defaults and override with options
+    Object.assign(
       this,
       {
         runOnLoad: true,
         width: 640,
         height: 480,
-        frameRate: 30,
-        /* set to zero for fast-as-possible display */ uuid: new Date().getTime(),
-        masks: [],
+        frameRate: 30 /* set to zero for fast-as-possible display */,
+        uuid: new Date().getTime(),
         preload: null,
         soundMode: typeof soundManager != "undefined" ? "sm2" : "html5",
-        audioEnabled: true
+        audioEnabled: false
       },
-      options
+      options,
+      {
+        masks: [],
+        scenes: [],
+        elapsed: 0,
+        elem: $(document.querySelector(sel)) //TODO: JQUERY REMOVE
+      }
     );
     this.intervalRate = this.frameRate ? 1000 / this.frameRate : 0;
-
-    this.masks = [];
-    this.scenes = [];
-    this.elapsed = 0;
-
-    this.elem = $(sel);
 
     this.preloadSounds = this["_" + this.soundMode + "PreloadSounds"];
     this.playSound = function(sound) {
