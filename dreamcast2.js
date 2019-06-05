@@ -3,16 +3,6 @@
  ************************/
 var dreamcast2;
 
-if (window.log === undefined) {
-  window.log = function() {
-    log.history = log.history || []; // store logs to an array for reference
-    log.history.push(arguments);
-    if (this.console) {
-      console.log(Array.prototype.slice.call(arguments));
-    }
-  };
-}
-
 (function($) {
   var noclick = function(ev) {
     ev.preventDefault();
@@ -33,10 +23,6 @@ if (window.log === undefined) {
           }
         }
         return s;
-      },
-      safe_remove: function(element) {
-        if (element.jquery) element = element.get(0);
-        element.parentNode && element.parentNode.removeChild(element);
       }
     }
   };
@@ -148,7 +134,7 @@ if (window.log === undefined) {
     if (scene) {
       scene.destroy();
       if (scene.layer) {
-        dreamcast2.util.safe_remove(scene.layer);
+        scene.layer.remove();
       }
     }
     var previousScene = this.getCurrentScene();
@@ -179,21 +165,20 @@ if (window.log === undefined) {
   };
   Game.prototype.setBackgroundImage = function(x, y, width, height, path) {
     this.svg.image(this.background, x, y, width, height, path);
-    dreamcast2.util.safe_remove(
-      $(this.background)
-        .children()
-        .first()
-    );
+
+    $(this.background)
+      .children()
+      .first()
+      .remove();
   };
   Game.prototype.setBackgroundColor = function(color) {
     this.svg.rect(this.background, 0, 0, this.width, this.height, {
       fill: color
     });
-    dreamcast2.util.safe_remove(
-      $(this.background)
-        .children()
-        .first()
-    );
+    $(this.background)
+      .children()
+      .first()
+      .remove();
   };
   Game.prototype.getElapsedTime = function() {
     return this.elapsed;
@@ -577,7 +562,7 @@ if (window.log === undefined) {
     if (arrayPos != -1) {
       this.scene.actors.splice(arrayPos, 1);
     }
-    dreamcast2.util.safe_remove(this.element);
+    this.element.remove();
   };
 
   dreamcast2.Sprite = Sprite;
