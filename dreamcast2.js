@@ -4,7 +4,7 @@
 var dreamcast2;
 
 (function($) {
-  var noclick = function(ev) {
+  const noclick = function(ev) {
     ev.preventDefault();
   };
 
@@ -16,7 +16,7 @@ var dreamcast2;
         );
       },
       pad: function(s, n, c) {
-        var padLen = n - s.length;
+        const padLen = n - s.length;
         if (padLen > 0) {
           for (var i = 0; i < padLen; i++) {
             s = c + s;
@@ -46,11 +46,12 @@ var dreamcast2;
         masks: [],
         scenes: [],
         elapsed: 0,
-        elem: $(document.querySelector(sel)) //TODO: JQUERY REMOVE
+        elem: document.querySelector(sel)
       }
     );
     this.intervalRate = this.frameRate ? 1000 / this.frameRate : 0;
 
+    // NOTE: Not sure what is happening here?
     this.preloadSounds = this["_" + this.soundMode + "PreloadSounds"];
     this.playSound = function(sound) {
       var func = this.audioEnabled
@@ -59,42 +60,37 @@ var dreamcast2;
       return func.call(this, sound);
     };
 
-    var game = this;
-    this.elem
-      .css({
-        width: this.width,
-        height: this.height
-      })
-      .svg(function(svg) {
-        game.svg = svg;
+    const game = this;
+    const elem = this.elem;
+    elem.style.width = this.width;
+    elem.style.height = this.height;
 
-        // disable text on flash
-        if (svgweb.config && svgweb.config.use == "flash") {
-          game.svg.text = function() {
-            return this;
-          };
-        }
-
-        game.defs = game.svg.defs();
-
-        game.background = svg.group(svg, "game-background");
-        game.svg.rect(game.background, 0, 0, game.width, game.height, {
-          fill: "#000000"
-        });
-
-        if (game.preload) {
-          for (var i = 0; i < game.preload.length; i++) {
-            var img = new Image();
-            img.src = game.preload[i];
-          }
-        }
-
-        if (game.runOnLoad) {
-          game.run();
-        }
-
-        callback(game);
+    $(elem).svg(function(svg) {
+      console.log(svg);
+      game.svg = svg;
+      game.defs = game.svg.defs();
+      console.log(game.defs);
+      game.background = svg.group(svg, "game-background");
+      game.svg.rect(game.background, 0, 0, game.width, game.height, {
+        fill: "#000000"
       });
+
+      if (game.preload) {
+        for (var i = 0; i < game.preload.length; i++) {
+          var img = new Image();
+          img.src = game.preload[i];
+        }
+      }
+
+      if (game.runOnLoad) {
+        game.run();
+      }
+
+      callback(game);
+    });
+
+    // TODO: Remove this cast to jQuery
+    this.elem = $(this.elem);
   };
   Game.prototype.run = function() {
     var then = new Date().getTime();
