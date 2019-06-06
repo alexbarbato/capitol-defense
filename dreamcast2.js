@@ -65,29 +65,36 @@ var dreamcast2;
     elem.style.width = this.width;
     elem.style.height = this.height;
 
-    $(elem).svg(function(svg) {
-      console.log(svg);
-      game.svg = svg;
-      game.defs = game.svg.defs();
-      console.log(game.defs);
-      game.background = svg.group(svg, "game-background");
-      game.svg.rect(game.background, 0, 0, game.width, game.height, {
-        fill: "#000000"
-      });
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttributeNS(null, "width", game.width);
+    svg.setAttributeNS(null, "height", game.height);
+    svg.setAttributeNS(null, "fill", "#000000");
+    elem.appendChild(svg);
+    game.svg = svg;
 
-      if (game.preload) {
-        for (var i = 0; i < game.preload.length; i++) {
-          var img = new Image();
-          img.src = game.preload[i];
-        }
+    // $(elem).svg(function(svg) {
+    //   game.svg = svg;
+    //   game.background = svg.group(svg, "game-background");
+    //   game.svg.rect(game.background, 0, 0, game.width, game.height, {
+    //     fill: "#000000"
+    //   });
+
+    //   console.log(game.svg);
+    // });
+
+    if (game.preload) {
+      for (var i = 0; i < game.preload.length; i++) {
+        var img = new Image();
+        img.src = game.preload[i];
       }
+    }
 
-      if (game.runOnLoad) {
-        game.run();
-      }
+    if (game.runOnLoad) {
+      game.run();
+    }
 
-      callback(game);
-    });
+    callback(game);
 
     // TODO: Remove this cast to jQuery
     this.elem = $(this.elem);
@@ -96,7 +103,7 @@ var dreamcast2;
     var then = new Date().getTime();
     var game = this;
     var tick = function() {
-      var suspendID = game.svg.root().suspendRedraw(5000);
+      var suspendID = game.svg.suspendRedraw(5000);
 
       var now = new Date().getTime();
       var delta = now - then;
@@ -108,7 +115,7 @@ var dreamcast2;
         scene.tick(delta);
       }
 
-      game.svg.root().unsuspendRedraw(suspendID);
+      game.svg.unsuspendRedraw(suspendID);
     };
     this.interval = setInterval(tick, this.intervalRate);
   };
