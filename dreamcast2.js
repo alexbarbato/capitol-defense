@@ -66,10 +66,8 @@ var dreamcast2;
     elem.style.height = this.height;
 
     $(elem).svg(function(svg) {
-      console.log(svg);
       game.svg = svg;
       game.defs = game.svg.defs();
-      console.log(game.defs);
       game.background = svg.group(svg, "game-background");
       game.svg.rect(game.background, 0, 0, game.width, game.height, {
         fill: "#000000"
@@ -548,13 +546,13 @@ var dreamcast2;
 
     if (this.animateWhileMoving) {
       this.frame = 0;
-      $(this.element).attr("x", 0);
+      this.element.setAttribute("x", 0);
       this.animating = false;
     }
   };
   Sprite.prototype.remove = function() {
     this.enabled = false;
-    var arrayPos = $.inArray(this, this.scene.actors);
+    var arrayPos = this.scene.actors.indexOf(this);
     if (arrayPos != -1) {
       this.scene.actors.splice(arrayPos, 1);
     }
